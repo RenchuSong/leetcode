@@ -17,6 +17,7 @@ struct TreeNode {
 
 class Solution {
 public:
+	//Recursive
 	TreeNode *preorder(TreeNode *node) {
 		if (node == NULL) return NULL;
 		TreeNode *left = node->left, *right = node->right,
@@ -29,9 +30,23 @@ public:
 		return rlast ? rlast : (llast ? llast : node);
 	}
 	
-    void flatten(TreeNode *root) {
+    void flattenRecursive(TreeNode *root) {
         if (root == NULL) return;
 		preorder(root);
+    }
+	
+	//Iterative
+	void flatten(TreeNode *root) {
+        while (root) {
+			if (root->left) {
+				TreeNode *pt = root->left;
+				while (pt->right) pt = pt->right;
+				pt->right = root->right;
+				root->right = root->left;
+				root->left = NULL;
+			}
+			root = root->right;
+		}
     }
 };
 
