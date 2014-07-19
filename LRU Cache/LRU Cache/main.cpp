@@ -7,58 +7,57 @@
 //
 
 #include <iostream>
-#include <map>
+#include <unordered_map>
+#include <list>
 #include <vector>
 
 using namespace std;
 
 class LRUCache{
-	int t = 0;
-	int cap = 0;
+	int capacity = 0;
 	
-	map<int, int> cache;
-	vector<pair<int, int> > index;	// the time stamp, the key in the map
+	unordered_map<int, int> cache;
+	list<int> keyList;
+	unordered_map<int, list<int>::iterator> itrPos;
 	
-	void up(int x) {
-		while (x > 0) {
-			int f = x / 2;
-			if (index[x].first < index[f].first) {
-				pair<int, int> tmp = index[x];
-				index[x] = index[f];
-				index[f] = tmp;
-				x = f;
-			}
-		}
+	void moveToEnd(int key) {
+		keyList.erase(itrPos[key]);
+		addKey(key);
 	}
 	
-	void down(int x) {
-		int nowCap = (int)index.size();
-		while (true) {
-			int t = x;
-			if (x * 2 + 1 < nowCap && index[t].first > index[x * 2 + 1].first) t = x * 2 + 1;
-			if (x * 2 + 2 < nowCap && index[t].first > index[x * 2 + 1].first) t = x * 2 + 2;
-			if (x == t) return;
-			pair<int, int> tmp = index[x];
-			index[x] = index[t];
-			index[t] = tmp;
-			x = t;
-		}
+	void addKey(int key) {
+		keyList.push_back(key);
+		auto pos = keyList.end();
+		--pos;
+		itrPos[key] = pos;
 	}
 	
 public:
     LRUCache(int capacity) {
-        cap = 0;
+        this->capacity = capacity;
     }
     
     int get(int key) {
-        if (cache[key] > 0) {
-			return cache[key]; else return -1;
+        if (cache.count(key) > 0) {
+			moveToEnd(key);
+			return cache[key];
 		}
+		return -1;
     }
     
     void set(int key, int value) {
-        if (cap < 1) return;
-		if (cache[key])
+        if (cache.count(key) > 0) {
+			moveToEnd(key);
+			cache[key] = value;
+		} else if (cache.size() < capacity) {
+			cache[key] = value;
+			addKey(key);
+		} else {
+			cache.erase(keyList.front());
+			keyList.pop_front();
+			cache[key] = value;
+			addKey(key);
+		}
     }
 };
 
