@@ -44,7 +44,9 @@ public:
 					pre = pre->next;
 				}
 				break;
-			} else if (x->val < y->val) {
+			} else{
+				cout << p << " " << q << endl;
+				if (x->val < y->val) {
 				++p;
 				pre->next = x;
 				x = x->next;
@@ -54,6 +56,7 @@ public:
 				pre->next = y;
 				y = y->next;
 				pre = pre->next;
+			}
 			}
 		}
 		return pre;
@@ -87,6 +90,7 @@ public:
 			for (int i = 0; i < p; ++i) {
 				pre = combine(pre, x, len, y, len);
 				x = nextx;
+				pre->next = nextx;
 				y = x;
 				if (i < p - 1 || mod > len)
 					for (int i = 0; i < len; ++i) y = y->next;
