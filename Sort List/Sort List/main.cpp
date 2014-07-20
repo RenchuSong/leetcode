@@ -81,9 +81,6 @@ public:
 		for (int loop = 0; loop < exp; ++loop) {
 			int len = 1 << loop;
 			int time = nn / len / 2;
-			//cout << time << endl;
-			//if (loop == 2)
-			//	print(vh);cout << endl;
 			ListNode *pre = vh, *nextStart = vh->next, *left = NULL, *right = NULL;
 			for (int i = 0; i < time; ++i) {
 				left = right = nextStart;
@@ -92,9 +89,7 @@ public:
 					nextStart = right;
 					for (int j = 0; j < len; ++j) nextStart = nextStart->next;
 				}
-				//if (i == 0) cout << left->val << " " << right->val << endl;
 				pre = combine(pre, left, right, len);
-				//cout << pre->val << "---" << endl;
 			}
 			pre->next = NULL;
 		}
